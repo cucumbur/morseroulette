@@ -13,11 +13,11 @@ io.on('connection', function(socket){
     console.log('user disconnected');
   });
 
-  socket.on('keydown', function(){
-    socket.broadcast.emit('keydown');
+  socket.on('morse-on', function(){
+    socket.broadcast.emit('morse-on');
   });
-  socket.on('keyup', function(){
-    socket.broadcast.emit('keyup');
+  socket.on('morse-off', function(){
+    socket.broadcast.emit('morse-off');
   });
 
 

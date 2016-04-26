@@ -15,16 +15,22 @@
       var socket = io();
 
       $(document).on("keydown", function (e) {
-          socket.emit('keydown');
+          socket.emit('morse-on');
       });
       $(document).on("keyup", function (e) {
-          socket.emit('keyup');
+          socket.emit('morse-off');
+      });
+      $(document).on("mousedown", function (e) {
+          socket.emit('morse-on');
+      });
+      $(document).on("mouseup", function (e) {
+          socket.emit('morse-off');
       });
 
-      socket.on('keydown', function(){
+      socket.on('morse-on', function(){
         $('body').css('background-color', 'black');
       });
-      socket.on('keyup', function(){
+      socket.on('morse-off', function(){
         $('body').css('background-color', 'white');
       });
     </script>
