@@ -16,25 +16,30 @@
       var WHITE = 'rgb(255, 255, 255)';
       var socket = io();
       var matching = null;
+      //FIXME: Re-add to use morse with keyboard once the debug feature to start matchmaking with keyboard is finished
       $(document).on("keydown mousedown touchstart ", function (e) {
-          socket.emit('morse-on');
+          socket.emit('morse_on');
       });
       $(document).on("keyup mouseup touchend", function (e) {
-          socket.emit('morse-off');
+          socket.emit('morse_off');
       });
 
-      socket.on('morse-on', function(){
+      socket.on('morse_on', function(){
         $('body').css('background-color', BLACK);
       });
 
-      socket.on('morse-off', function(){
+      socket.on('morse_off', function(){
         $('body').css('background-color', WHITE);
       });
 
       socket.on('matching', function(){
-          matching = setInterval(blink, 100);
+        matching = setInterval(blink, 100);
       });
 
+      socket.on('matched', function(){
+        clearInterval(matching);
+        alert('matched!');
+      });
 
       function blink(){
         if ($('body').css('background-color') == BLACK) {
