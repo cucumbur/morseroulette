@@ -8,11 +8,11 @@ var port = 3010
 
 // Command line option handler
 program
-  .version(0.2.0)
-  .option('p, --port <n>', 'Set server port number', parseInt)
+  .version('0.2.0')
+  .option('-p, --port <n>', 'Set server port number', parseInt)
   .parse(process.argv);
 if (program.port) {
-  port = program.port
+  port = program.port;
 }
 
 
@@ -25,6 +25,8 @@ io.on('connection', function(socket){
   socket.on('disconnect', function(){
     console.log('user disconnected');
   });
+
+  io.emit('matching');
 
   socket.on('morse-on', function(){
     socket.broadcast.emit('morse-on');

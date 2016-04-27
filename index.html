@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Space Morse</title>
+    <title>Morseroulette</title>
     <style>
       body { background-color:white; }
     </style>
@@ -12,27 +12,39 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
+      var BLACK = 'rgb(0, 0, 0)';
+      var WHITE = 'rgb(255, 255, 255)';
       var socket = io();
-
-      $(document).on("keydown", function (e) {
+      var matching = null;
+      $(document).on("keydown mousedown touchstart ", function (e) {
           socket.emit('morse-on');
       });
-      $(document).on("keyup", function (e) {
-          socket.emit('morse-off');
-      });
-      $(document).on("mousedown", function (e) {
-          socket.emit('morse-on');
-      });
-      $(document).on("mouseup", function (e) {
+      $(document).on("keyup mouseup touchend", function (e) {
           socket.emit('morse-off');
       });
 
       socket.on('morse-on', function(){
-        $('body').css('background-color', 'black');
+        $('body').css('background-color', BLACK);
       });
+
       socket.on('morse-off', function(){
-        $('body').css('background-color', 'white');
+        $('body').css('background-color', WHITE);
       });
+
+      socket.on('matching', function(){
+          matching = setInterval(blink, 100);
+      });
+
+
+      function blink(){
+        if ($('body').css('background-color') == BLACK) {
+          $('body').css('background-color', WHITE);
+        } else {
+          $('body').css('background-color', BLACK);
+        }
+      }
+
+
     </script>
   </body>
 </html>
