@@ -15,8 +15,13 @@ if (program.port) {
   port = program.port;
 }
 
-
+// / route for ease of testing on dev machine
 app.get('/', function (req, res) {
+  res.sendFile(__dirname + '/index.html')
+});
+
+// /morseroulette route for production
+app.get('/morseroulette', function (req, res) {
   res.sendFile(__dirname + '/index.html')
 });
 
@@ -71,7 +76,6 @@ io.on('connection', function(socket){
 
 
   socket.on('morse_on', function(){
-    console.log('Morse from ' + socket.id);
     if (socket.matched){
       socket.to(socket.morseroom).broadcast.emit('morse_on');
     }
