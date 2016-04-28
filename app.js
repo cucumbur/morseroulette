@@ -32,6 +32,8 @@ io.on('connection', function(socket){
     if (socket.matched){
       console.log("Sending signal that partner disconnected now.");
       socket.to(socket.morseroom).broadcast.emit('partner_disconnect');
+    } else {
+      waiting.pop(waiting.find(function(sock){return sock.id == socket.id;}));
     }
     console.log('User ' + socket.id + " disconnected");
   });
@@ -45,8 +47,9 @@ io.on('connection', function(socket){
     socket.emit('matching');
     if (waiting.length > 0){
       //TODO: this is a stack not a queue, so popping could make people wait a long time...
+      //FIXME: Not sure if socket is properly removed from queue on disconnect while waiting
       var other_socket = io.sockets.connected[waiting.pop()];
-      if (!socket.matched && !other_socket.matched) {
+      if (other_socket && (!socket.matched && !other_socket.matched)) {
         console.log('Matched ' + socket.id + ' with ' + other_socket.id);
         socket.matched = true;
         other_socket.matched = true;
