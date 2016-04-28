@@ -20,10 +20,17 @@ app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html')
 });
 
+// /morseroulette route for sites that need .html (like itch)
+app.get('/morseroulette/index.html', function (req, res) {
+  res.sendFile(__dirname + '/index.html')
+});
+
 // /morseroulette route for production
 app.get('/morseroulette', function (req, res) {
   res.sendFile(__dirname + '/index.html')
 });
+
+
 
 io.on('connection', function(socket){
   // Log the user id upon connection
