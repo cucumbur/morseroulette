@@ -11,26 +11,44 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script type="text/javascript" src="http://cdn.tonejs.org/r6/Tone.min.js"></script>
     <script>
       var BLACK = 'rgb(0, 0, 0)';
       var WHITE = 'rgb(255, 255, 255)';
       var socket = io();
       var matching = null;
 
+      // Morse code tone beeper
+      var beeper = new Tone.SimpleSynth({"envelope" : {
+        "attack" : 0,
+        "decay" : 0,
+        "sustain" : 0.5,
+        "release" : 0,
+      }}).toMaster();
+
+
       //Morse can be sent with mouse, keyboard, or touch screen
       $(document).on("keydown mousedown touchstart ", function (e) {
-        socket.emit('morse_on');
+        if (!e.ctrlKey && !((e.keyCode == 91) || (e.keyCode == 93))){ // Disable ctrl/command keys as morse since they cause issues on tabout
+          socket.emit('morse_on');
+        }
       });
       $(document).on("keyup mouseup touchend", function (e) {
         socket.emit('morse_off');
       });
+      $(document).focusout(function (e) {
+        socket.emit('morse_off');
+      });
+
 
 
       socket.on('morse_on', function(){
         $('body').css('background-color', BLACK);
+        beeper.triggerAttack("B5");
       });
       socket.on('morse_off', function(){
         $('body').css('background-color', WHITE);
+        beeper.triggerRelease();
       });
 
 
@@ -39,6 +57,7 @@
       });
       socket.on('matched', function(){
         clearInterval(matching);
+        $('body').css('background-color', WHITE);
       });
 
       // TODO: This isn't designed the best, the server sends the disconnect
@@ -46,7 +65,6 @@
       socket.on('partner_disconnect', function(){
         socket.emit('partner_disconnect');
       });
-
 
       function blink(){
         if ($('body').css('background-color') == BLACK) {
