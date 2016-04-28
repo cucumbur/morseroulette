@@ -9,6 +9,6 @@ Morseroulette is online at <http://cucumber.party/morseroulette>.
 
 ## Instructions
 * When you first visit the page, it will blink until you have connected to a partner
-* Once your partner is connected, your screen will flash and beep as they send their morseroulette
+* Once your partner is connected, your screen will flash and beep as they send their morse code
 * Your partner will also receive your morse in the same way (although you won't have feedback of what you sent)
 * When your partner disconnects, your window will blink again until you connect to another partner
