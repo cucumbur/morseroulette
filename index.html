@@ -16,30 +16,37 @@
       var WHITE = 'rgb(255, 255, 255)';
       var socket = io();
       var matching = null;
-      //FIXME: Re-add to use morse with keyboard once the debug feature to start matchmaking with keyboard is finished
+
+      //Morse can be sent with mouse, keyboard, or touch screen
       $(document).on("keydown mousedown touchstart ", function (e) {
-          socket.emit('morse_on');
+        socket.emit('morse_on');
       });
       $(document).on("keyup mouseup touchend", function (e) {
-          socket.emit('morse_off');
+        socket.emit('morse_off');
       });
+
 
       socket.on('morse_on', function(){
         $('body').css('background-color', BLACK);
       });
-
       socket.on('morse_off', function(){
         $('body').css('background-color', WHITE);
       });
 
+
       socket.on('matching', function(){
         matching = setInterval(blink, 100);
       });
-
       socket.on('matched', function(){
         clearInterval(matching);
-        alert('matched!');
       });
+
+      // TODO: This isn't designed the best, the server sends the disconnect
+      //        message to the client which then sends it back to the server
+      socket.on('partner_disconnect', function(){
+        socket.emit('partner_disconnect');
+      });
+
 
       function blink(){
         if ($('body').css('background-color') == BLACK) {

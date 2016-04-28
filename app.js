@@ -24,41 +24,75 @@ io.on('connection', function(socket){
   // Log the user id upon connection
   console.log('User ' + socket.id + " connected");
   socket.on('disconnect', function(){
+    if (socket.matched){
+      console.log("Sending signal that partner disconnected now.");
+      socket.to(socket.morseroom).broadcast.emit('partner_disconnect');
+    }
     console.log('User ' + socket.id + " disconnected");
   });
-  socket.matched = false;
-  socket.emit('matching');
+
+
 
   // Connect with waiting user if the queue is not empty
-  if (waiting.length > 0){
-    //TODO: this is a stack not a queue, so popping could make people wait a long time...
-    var other_socket = io.sockets.connected[waiting.pop()];
-    if (!socket.matched && !other_socket.matched) {
-      console.log('Matched ' + socket.id + ' with ' + other_socket.id);
-      socket.matched = true;
-      other_socket.matched = true;
-      // Create a private room from the two sock ids
-      var room_name = 'r_id1' + socket.id + 'r_id2'+ other_socket.id;
-      socket.join(room_name);
-      other_socket.join(room_name);
-      socket.to(room_name).emit('matched');
-      socket.emit('matched');
+  function tryMatch(){
+    console.log(socket.id + " is searching for a match");
+    socket.matched = false;
+    socket.emit('matching');
+    if (waiting.length > 0){
+      //TODO: this is a stack not a queue, so popping could make people wait a long time...
+      var other_socket = io.sockets.connected[waiting.pop()];
+      if (!socket.matched && !other_socket.matched) {
+        console.log('Matched ' + socket.id + ' with ' + other_socket.id);
+        socket.matched = true;
+        other_socket.matched = true;
+        // Create a private room from the two sock ids
+        var room_name = 'r_id1' + socket.id + 'r_id2'+ other_socket.id;
+        socket.join(room_name);
+        other_socket.join(room_name);
+        socket.morseroom = room_name;
+        other_socket.morseroom = room_name;
+        socket.to(room_name).emit('matched');
+        socket.emit('matched');
+      }
+    } else {
+      // Add this socket to the matchmaking queue if it is empty
+      waiting.push(socket.id);
     }
-  } else {
-    // Add this socket to the matchmaking queue if it is empty
-    waiting.push(socket.id);
   }
+  tryMatch();
 
-  // Check to see if anyone is waiting in the matchmaking queue, and if so, try connecting to them
-  // REVIEW: Is this atomic? Does this cause bugs if multiple people try to matchmake at the same time?
+
+  // re-enter matchmaking when partner disconnects and leave the old room
+  socket.on('partner_disconnect', function(){
+    console.log(socket.id + " had their partner disconnect and will now enter matchmaking");
+    socket.leave(socket.morseroom);
+    tryMatch();
+  });
 
 
   socket.on('morse_on', function(){
-    socket.broadcast.emit('morse_on');
+    console.log('Morse from ' + socket.id);
+    if (socket.matched){
+      socket.to(socket.morseroom).broadcast.emit('morse_on');
+    }
   });
   socket.on('morse_off', function(){
-    socket.broadcast.emit('morse_off');
+    if (socket.matched){
+      socket.to(socket.morseroom).broadcast.emit('morse_off');
+    }
   });
+
+  // This takes the list of rooms and makes sure it leaves the proper
+  // room when their partner disconnects. (ie the id1id2 room)
+  function selectMatchedRoom(socket) {
+    var rooms = socket.rooms;
+    if (rooms[1] != socket.id) {
+      return rooms[1];
+    }
+    return rooms[0];
+  }
+
+
 
 });
 
