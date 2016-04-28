@@ -1,6 +1,6 @@
 {
   "name": "morseroulette",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "What would you say if you didn't know anyone was decoding?",
   "main": "app.js",
   "scripts": {
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cucumbur/space_morse.git"
+    "url": "git+https://github.com/cucumbur/morseroulette.git"
   },
   "author": "Rick Sheahan (@cucumbur)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/cucumbur/space_morse/issues"
+    "url": "https://github.com/cucumbur/morseroulette/issues"
   },
-  "homepage": "https://github.com/cucumbur/space_morse#readme",
+  "homepage": "https://github.com/cucumbur/morseroulette#readme",
   "dependencies": {
     "commander": "^2.9.0",
     "express": "^4.13.4",
