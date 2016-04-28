@@ -13,10 +13,25 @@
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script type="text/javascript" src="http://cdn.tonejs.org/r6/Tone.min.js"></script>
     <script>
-      var BLACK = 'rgb(0, 0, 0)';
-      var WHITE = 'rgb(255, 255, 255)';
-      var socket = io();
-      var matching = null;
+      // Color picker
+      var colorCombos = [
+        ['rgb(224, 228, 204)', 'rgb(250, 105, 0)'],
+        ['rgb(249, 205, 173)', 'rgb(131, 175, 155)'],
+        ['rgb(249, 205, 173)', 'rgb(254, 67, 101)'],
+        ['rgb(203, 232, 107)', 'rgb(28, 20, 13)'],
+        ['rgb(205, 179, 128)', 'rgb(3, 22, 52)'],
+        ['rgb(247, 228, 190)', 'rgb(65, 62, 74)'],
+        ['rgb(202, 215, 178)', 'rgb(93, 65, 87)'],
+        ['rgb(238, 238, 238)', 'rgb(81, 81, 81)'],
+        ['rgb(238, 238, 238)', 'rgb(0, 180, 255)'],
+        ['rgb(255, 255, 255)', 'rgb(0, 0, 0)'],
+      ];
+      var color = colorCombos[Math.floor(Math.random() * colorCombos.length)];
+      var BLACK = color[1];
+      var WHITE = color[0];
+
+
+
 
       // Morse code tone beeper
       var beeper = new Tone.SimpleSynth({"envelope" : {
@@ -25,7 +40,12 @@
         "sustain" : 0.5,
         "release" : 0,
       }}).toMaster();
+      var keyTypes = ["C5","D5", "E5", "F5", "G5","A5","B5"];
+      var key = keyTypes[Math.floor(Math.random() * keyTypes.length)];
 
+      // Socket connection and variable initialization
+      var socket = io();
+      var matching = null;
 
       //Morse can be sent with mouse, keyboard, or touch screen
       $(document).on("keydown mousedown touchstart ", function (e) {
@@ -44,7 +64,7 @@
 
       socket.on('morse_on', function(){
         $('body').css('background-color', BLACK);
-        beeper.triggerAttack("B5");
+        beeper.triggerAttack(key);
       });
       socket.on('morse_off', function(){
         $('body').css('background-color', WHITE);
