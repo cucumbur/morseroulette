@@ -1,5 +1,8 @@
 # Morseroulette
 What would you say if you didn't know anyone was decoding?
+## 🛑 SERVER IS CURRENTLY DOWN 🛑
+you're free to run it yourself though ;)
+
 
 Made for [bit jam](https://itch.io/jam/bit-jam) by [@cucumbur](https://twitter.com/cucumbur).  Version 1.0.0 released on April 28, 2016.
 ## Play
